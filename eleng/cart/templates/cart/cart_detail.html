@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container">
+    <h2 class="users-h2">Корзина</h2>
+
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th class="th_first_hide">Изображение</th>
+                <th>Изделие</th>
+                <th>Количество/Обновить</th>
+                <th>Удалить</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart %}
+                <tr class="cart-item">
+                    {% with product=item.product %}
+                        <td class="th_first_hide">
+                            <img class="cart-item-image" src="{{ product.photo.url }}" alt="{{ product.name }}">
+                        </td>
+                        <td class="cart-item-title"><b>{{product.category}}: </b>{{ product.name }}</td>
+                        <td class="cart-item-quantity">
+                            <form class="cart-add-form" action="{% url 'cart_add' product.id %}" method="post">
+                                {{ item.update_quantity_form.quantity }}
+                                {{ item.update_quantity_form.override }}
+                                {% csrf_token %}
+                                <button type="submit" class="cart-add-button" style="background-color: #4CAF50;">Обновить</button>
+                            </form>
+                        </td>
+
+                        <td class="cart-item-remove">
+                            <form class="cart-add-form" action="{% url 'cart_delete' product.id %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="cart-add-button" style="background-color: #ff4d4d;">Удалить</button>
+                            </form>
+                        </td>
+                    {% endwith %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="cart-footer">
+        <a href="{% url 'catalog' %}"><button class="continue-shopping">Продолжить покупку</button></a>
+        <a href="{% url 'order_create' %}"><button class="checkout">Оформить заказ</button></a>
+    </div>
+</div>
+{% endblock %}

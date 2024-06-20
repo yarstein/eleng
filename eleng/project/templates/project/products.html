@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container">
+    {% for item in sirvices %}
+        <div class="content {% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
+            <h2 id="services_{{ item.pk }}">{{ item.title }}</h2>
+            <img src="{{ item.content_image.url }}" alt="{{item.title}}">
+            <p>{{ item.content }}</p>
+        </div>
+    {% endfor %}
+    <div class="products_footer">
+        
+    </div>
+</div>
+{% endblock %}

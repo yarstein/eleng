@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="users-h2">Авторизация</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}"/>
+
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="form-error">{{ form.non_field_errors }}</div>
+        {% for f in form %}
+            <p>
+                <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+                {% if f.field.widget.input_type == 'password' %}
+                    <div style="position: relative;">
+                        {{ f }}
+                        <button type="button" onclick="togglePasswordVisibility('{{ f.id_for_label }}');" style="position: absolute; right: 10px; top: 10px; border: none; background: none; cursor: pointer;">
+                            <i id="toggleEye{{ f.id_for_label }}" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                {% else %}
+                    {{ f }}
+                {% endif %}
+                <div class="form-error">{{ f.errors }}</div>
+            </p>
+        {% endfor %}
+        <div class="social">
+            <ul>
+                <li>
+                    <button type="submit">Войти</button>
+                </li>
+                <li class="google">
+                    <a href="{% url 'social:begin' 'google-oauth2' %}">
+                        Sign in with Google
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="forgot-password">
+            <a href="{% url 'users:password_reset' %}">Забыли пароль?</a>
+        </div>
+        
+    </form>
+</div>
+
+<script>
+    function togglePasswordVisibility(fieldId) {
+        var passwordInput = document.getElementById(fieldId);
+        var toggleIcon = document.getElementById('toggleEye' + fieldId);
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+</script>
+{% endblock %}

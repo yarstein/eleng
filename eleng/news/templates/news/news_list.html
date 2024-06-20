@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="news-main">
+        <h1>Новости</h1>
+        <div class="row">
+            {% for item_news in news %}
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="news-cart">
+                        <a href="{{ item_news.get_absolute_url }}">
+                            <img src="{{ item_news.image.url }}" alt="item_news.title">
+                            <h3>{{ item_news.time_create|date:"d F, Y" }}</h3>
+                            <h2>{{ item_news.title }}</h2>
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+
+            <!-- Пагинация, page_obj - объект текущей стр. (см.оф.док) -->
+            {% if page_obj.has_other_pages %}
+            <nav class="list-pages">
+                <ul>
+                    {% if page_obj.has_previous %}
+                    <li class="page-num">
+                        <a href="?page={{ page_obj.previous_page_number }}">&lt;</a>
+                    </li>
+                    {% endif %}
+
+                    {% for p in paginator.page_range %}
+                    {% if page_obj.number == p %}
+                        <li class="page-num page-num-selected">{{ p }}</li>
+                    {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+                        <li class="page-num">
+                            <a href="?page={{ p }}">{{ p }}</a>
+                        </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-num">
+                        <a href="?page={{ page_obj.next_page_number }}">&gt;</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif%}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

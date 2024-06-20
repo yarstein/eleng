@@ -1,0 +1,40 @@
+{% extends "admin/base_site.html" %}
+
+{% load static %}
+
+{% block content %}
+<div id="content-main">
+
+    <h1>Ответ на заказ №{{ order.id }}</h1>
+    <form action="" method="post">
+
+        {% csrf_token %}
+        {% if form.non_field_errors|length > 0 %}
+        <p class="errornote">
+            "Please correct the errors below."
+        </p>
+        {{ form.non_field_errors }}
+        {% endif %}
+
+        <fieldset class="module aligned">
+            {{ form.media }}
+            {% for field in form %}
+              <div class="form-row">
+                {{ field.errors }}
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.field.help_text %}
+                <p class="help">
+                  {{ field.field.help_text|safe }}
+                </p>
+                {% endif %}
+              </div>
+            {% endfor %}
+        </fieldset>
+
+        <div class="submit-row">
+            <input type="submit" class="default" value="Отправить">
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="users-h2">Профиль</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="avatar-wrapper">
+            <img src="{{ user.avatar.url }}" width="80px" height="80px" id="avatar-image">
+            <input type="file" name="avatar" id="avatar-input" style="display: none;">
+        </div>
+        <div class="form-error">{{ form.non_field_errors }}</div>
+        {% for f in form %}
+            {% if f.name != 'avatar' %}
+                <p>
+                    <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+                    {{ f }}
+                </p>
+                <div class="form-error">{{ f.errors }}</div>
+            {% endif %}
+        {% endfor %}
+
+        <p><button type="submit">Сохранить</button></p>
+
+        {% if user.has_usable_password %}
+            <div class="password-change-link">
+                <a href="{% url 'users:password_change' %}">Сменить пароль</a>
+            </div>
+        {% endif %}
+    </form>
+
+</div>
+
+<script>
+    document.getElementById('avatar-input').addEventListener('change', function(event) {
+        if (event.target.files && event.target.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('avatar-image').src = e.target.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    });
+
+    document.getElementById('avatar-image').addEventListener('click', function() {
+        document.getElementById('avatar-input').click();
+    });
+</script>
+
+{% endblock %}
+
+

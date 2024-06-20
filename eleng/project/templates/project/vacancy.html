@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="aboutcompany">
+        <h2>Карьера</h2>
+
+        {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                        <div class="message {{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+        {% endif %}
+
+        <p>Независимо от того, являетесь ли Вы профессионалом высокого класса или выпускником ВУЗа, наша компания открывает для Вас широкие возможности построения карьеры в нашей компании – как профессиональной, так и управленческой.</p>
+
+        <p>Если Вы заинтересованы в интересной работе, которая позволит раскрыть все Ваши возможности и таланты – мы ждем Вас!</p>
+
+        <p><span style="color: red; font-weight: bold;">«ООО Electro-Engineering»</span> – компания, в которой Вы сможете реализовать свои мечты. Обладая уникальными ресурсами, наша компания генерирует для своих сотрудников по-настоящему динамичную атмосферу, в которой сочетаются командная работа, глобальное мышление, быстрота действий и яркий результат.</p>
+
+        <div class="vacancy">
+            <h3>Вакансии:</h3>
+    
+            {% for item in content %}
+                <div class="accordion-item">
+                    <button class="accordion-button">{{ item.title }}</button>
+                    <div class="accordion-content">
+                        <p>{{ item.description|safe }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="resume">
+            <h3>ОТПРАВЬТЕ СВОЕ РЕЗЮМЕ</h3>
+
+            <form action="{% url 'vacancy' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="form-error">{{ form.non_field_errors }}</div>
+                {% for f in form %}
+                    <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
+                    <div class="form-error">{{ f.errors }}</div>
+                {% endfor %}
+                <button type="submit">Отправить</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var acc = document.getElementsByClassName("accordion-button");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        });
+    }
+});
+</script>
+
+{% endblock %}

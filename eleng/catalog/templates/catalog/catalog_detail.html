@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% load mptt_tags static %}
+
+{% block content %}
+<div class="container">
+    <div class="nav-sidebar detail">
+        <div class="breadcrumbs">
+            <a href="{% url 'catalog' %}">Главная</a>
+            {% for breadcrumb in breadcrumbs %}
+                <span> \ </span>
+                <a href="{{ breadcrumb.get_absolute_url }}">{{ breadcrumb.title }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="detail-content">
+        <img class="article-image" src="{{ product.photo.url }}">
+        <h2>{{ product.name }}</h2>
+
+        {% if product.tags.all %}
+        <h3 style="display:inline-block">Теги:</h3> {% for tag in product.tags.all %} <a class="tags" href="{% url 'tag' tag.slug %}">{{ tag }}</a> {% endfor %}
+        {% endif %}
+
+        <!-- Добавление товара в Корзину -->
+        <div class="cart-add">
+            <form class="cart-add-form" action="{% url 'cart_add' product.id %}" method="post">
+                {{ cart_product_form }}
+                {% csrf_token %}
+                <input class="cart-add-button" type="submit" value="Добавить в корзину">
+            </form>
+        </div>
+
+        <h3>Описание:</h3>
+        <p>{{ product.description|safe }}</p>
+    </div>
+
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'Characteristic')"><h3>Характеристика</h3></button>
+        <button class="tablinks" onclick="openTab(event, 'Comments')"><h3>Комментарий {{ total_comments }}</h3></button>
+    </div>
+
+    <div id="Characteristic" class="tabcontent">
+        <div class="characteristic">
+            {{ product.characteristics|safe }}
+        </div>
+    </div>
+    
+    <div id="Comments" class="tabcontent">
+        <div class="comments">
+            {% include 'catalog/comments_list.html' %}
+        </div>
+    </div>
+
+    <div class="row">
+        <h3 style="margin: 20px 0; font-size: 24px; ">Похожие изделия:</h3>
+        {% for sim_product in similar_products %}
+            <div class="col-md-6 col-lg-3 catalog">
+                <div class="article-card">
+                    <img class="article-image" src="{{ sim_product.photo.url }}" alt="{{ sim_product.name }}">
+                    <div class="article-info">
+                        <h2 class="article-title">{{ sim_product.name }}</h2>
+                        <div class="article-link-container">
+                            <a href="{{ sim_product.get_absolute_url }}" class="article-link">ПОДРОБНЕЕ ...</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+
+<script>
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+    
+    // По умолчанию открыть первую вкладку
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelector('.tablinks').click();
+    });
+    </script>
+
+
+{% endblock %}

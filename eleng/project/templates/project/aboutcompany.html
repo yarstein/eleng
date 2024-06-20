@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="aboutcompany">
+        <h2>О компании</h2>
+
+        {% if content.main_image %}
+            <img class="main_image" src="{{ content.main_image.url }}" alt="main">
+        {% endif %}
+        {{ content.content|safe }}
+        
+        <div class="company-files">
+            {% for file in content.files.all %}
+                {% if not file.is_pdf %}
+                <img src="{{ file.file.url }}" alt="{{ file.file.name }}">
+                {% else %}
+                    <a href="{{ file.file.url }}">Скачать PDF: {{ file.file.name }}</a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="unique-features">
+            <p class="experience">Мы объединяем в своих решениях:</p>
+            <p>«ОПЫТ ПОКОЛЕНИЙ  + ЭНЕРГИЮ МОЛОДОСТИ».</p>
+            <p class="motto">Девиз компании:</p>
+            <p class="company-name">«ELECTRO—ENGINEERING»  – ИНЖИНИРИНГ ВАШЕГО УСПЕХА И ПРОЦВЕТАНИЯ!</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

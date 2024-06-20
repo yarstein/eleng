@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="container">
+    <h2 class="users-h2">Оформить заказ</h2>
+
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>Изображение</th>
+                <th>Изделие</th>
+                <th>Количество</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart %}
+                <tr class="cart-item">
+                    {% with product=item.product %}
+                        <td>
+                            <img class="cart-item-image" src="{{ product.photo.url }}" alt="{{ product.name }}" style="width: 70px; height: 70px;">
+                        </td>
+                        <td class="cart-item-title"><b>{{product.category}}: </b>{{ product.name }}</td>
+                        <td class="cart-item-title">{{ item.quantity }}</td>
+                    {% endwith %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <form action="" method="POST">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <p><button type="submit">Отправить</button></p>
+    </form>
+</div>
+{% endblock %}

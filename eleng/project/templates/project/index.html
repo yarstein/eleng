@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% load news_tags %}
+
+{% load static %}
+
+{% block content %}
+<!-- Контейнер слайд-шоу -->
+<div class="slideshow-container">
+    <a class="link-us" href="{% url 'aboutcompany' %}">Подробнее о нас</a>
+    <!-- Полноразмерные изображения с числом и текстом подписи -->
+    {% for slider in sliders %}
+    <div class="mySlides fade">
+        <div class="container"><div class="numbertext">{{ slider.title }}</div></div>
+        <img src="{{ slider.image.url }}" style="width:100%; filter:brightness(70%)">
+        <div class="container"><div class="text">{{ slider.description }}</div></div>
+    </div>
+    {% endfor %}
+
+    <!-- Вперед и назад кнопки -->
+    <div>
+        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+        <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+    <br>
+  
+    <!-- Точки/круги -->
+    <div class="bottom-slide" style="text-align:center">
+    {% for slider in sliders %}
+    <span class="dot" onclick="currentSlide('{{slider.pk}}')"></span>
+    {% endfor %}
+    </div>
+</div>
+
+<!-- Контейнер НАШИ УСЛУГИ -->
+<div class="container">
+    <h2 class="title-text">Мы предлагаем</h2>
+    <div class="row">
+        {% for item in services %}
+        <div class="col-lg-4 col-md-6">
+            <div class="services">
+                <h2>{{item.title}}</h2>
+                <img src="{{ item.summary_image.url }}" width="100%">
+                <p>{{ item.summary|truncatechars:300 }}</p>
+                <a href="{% url 'product' %}#services_{{item.pk}}">Подробнее ...</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Контейнер НАША ПРОДУКЦИЯ -->
+    <div class="container">
+        <h2 class="title-text">Наша продукция</h2>
+    </div>
+<div class="production">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-12 our-product">
+                <h3>ELECTRO-ENGINEERING</h3>
+                <h2>Каталог нашей продукции</h2>
+                <p>Ознакомьтесь с нашим каталогом</p>
+                <a href="{% url 'catalog' %}">Перейти</a>
+                <img src="{% static 'project\src\Shkaf_RPN.png' %}" height="500px">
+            </div>
+            <div class="col-lg-6 col-md-12 our-product-img">
+                <div class="row row-our-product-img">
+                    <div class="col-sm-6 col-md-3 col-lg-6">
+                        <div class="product">
+                            <h2>для ЗАВОДОВ</h2>
+                            <img class="img-our-product" src="{% static 'project\src\dlyz_zavoda.jpg' %}">
+                            <p>Практичес­кое вопло­ще­ние пере­довых реше­ний и со­времен­ных техно­логий для круп­ней­ших заво­дов, пред­приятий и част­ного произ­водства по всему миру.</p>
+                            <a href="{% url 'catalog' %}">Перейти ...</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3 col-lg-6">
+                        <div class="product">
+                            <h2>для ДОМА</h2>
+                            <img class="img-our-product" src="{% static 'project\src\dom_panel_krisha.jpg' %}">
+                            <p>Оптимиза­ция и доступ­ность слож­ных техно­ло­гичес­ких реше­ний для повсед­нев­ного ком­форта на­ших пот­ребителей, как дома, так и в офисе.</p>
+                            <a href="{% url 'catalog' %}">Перейти ...</a>
+                        </div>
+                    </div>
+                
+                    <div class="col-sm-6 col-md-3 col-lg-6">
+                        <div class="product">
+                            <h2>для БИЗНЕСА</h2>
+                            <img class="img-our-product" src="{% static 'project\src\dlyz_biznesa.jpg' %}">
+                            <p>Перспектив­ное и востр­ебован­ное обору­дова­ние, обеспе­чива­ющее более про­дуктив­ное и эко­номич­ное веде­ние Вашего бизнеса.</p>
+                            <a href="{% url 'catalog' %}">Перейти ...</a>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3 col-lg-6">
+                        <div class="product">
+                            <h2>для СИСТЕМ СВЯЗИ</h2>
+                            <img class="img-our-product" src="{% static 'project\src\dlya_svyazi.jpg' %}">
+                            <p>Обеспе­чение развития широко­полос­ных оптико-воло­кон­ных сетей на основе FTTx техно­логий и пере­дачи циф­ровых канал­ов теле­видения выс­окого ка­чества.</p>
+                            <a href="{% url 'catalog' %}">Перейти ...</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Контейнер НАШИ ПАРТНЕРЫ -->
+<div class="container">
+    <h2 class="title-text">Наши партнеры</h2>
+</div>
+
+<div class="partners">
+    <div class="container">
+        <div class="row" style="justify-content: space-between;">
+            <div class="col-2">
+                <img src="{% static 'project\src\Group.svg' %}" width="100%" height="100%">
+            </div>
+            <div class="col-2">
+                <img src="{% static 'project\src\WAGO 1.svg' %}" width="100%" height="100%">
+            </div>
+            <div class="col-2">
+                <img src="{% static 'project\src\shnider.png' %}" width="100%"height="100%">
+            </div>
+            <div class="col-2">
+                <img src="{% static 'project\src\Siemens_AG_logo.svg.png' %}" width="100%" height="100%">
+            </div>
+            <div class="col-2">
+                <img src="{% static 'project\src\Phoenix_Contact_Logo.svg' %}" width="100%" height="100%">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Контейнер Пресс-центр -->
+<div class="container">
+    <h2 class="title-text">Пресс-центр</h2>
+</div>
+
+<!-- Контейнер Пресс-центр -->
+<div class="news">
+    <div class="container">
+        <h2>Новости</h2>
+        <div class="row">
+            {% get_latest_news as latest_news %}
+    
+            {% for news in latest_news %}
+                <div class="col-md-6 col-lg-3">
+                    <div class="latest-news">
+                        <a href="{{ news.get_absolute_url }}"><img src="{{ news.image.url }}" alt="{{ news.title }}"></a> 
+                        <div class="latest-news-title">{{ news.title }}</div>
+                        <div class="latest-news-date">
+                            <h4>{{ news.time_create|date:"d F, Y" }}</h4>
+                            <a href="{{ news.get_absolute_url }}">Подробнее...</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

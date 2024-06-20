@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<div class="container">
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-12 col-md-6">
+            <h2 class="contact-h2">Наши контакты</h2>
+            <div class="contact-info">
+                <p><b>Название организации:</b> <span style="color: red; font-weight: bold; font-size: 20px;">ООО «Electro-Engineering»</span></p>
+                <p><b>Адрес:</b> Узбекистан, Ташкент, 100105, ул. Фаргона йули, 94</p>
+                <p><b>Часы работы:</b> Ежедневно: c 9:00 до 18:00 (UTC/GMT +5), Выходные: суббота, воскресенье</p>
+                <p><b>Приёмная:</b> Тел/Факс: <a href="tel:+998712834419" style="color:peru;">+998 (71) 283-44-19</a>, <a href="tel:+998712911083" style="color:peru;">+998 (71) 291-10-83</a></p>
+                <p><b>Отдел реализации:</b> Багиров Роман Азизович, <a href="tel:+998712911673" style="color:peru;">+998 (71) 291-16-73</a></p>
+                <p><b>Бухгалтерия:</b> Ахмедгариева Гулрух Рахимовна, <a href="tel:+998712912731" style="color:peru;">+998 (71) 291-27-31</a></p>
+                <p><b>E-mail:</b> <a href="mailto:info@eleng.uz" style="color:blue;">info@eleng.uz</a></p>
+                <p><b>Сайт:</b> <a href="http://www.electroengineering.org" style="color: green;">www.electroengineering.org</a></p>
+
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <h2 class="contact-h2">Местонахождение</h2>
+            <div class="contact-geo">
+                <iframe style="height: 100%;" src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1499.220660565646!2d69.3028089!3d41.2774987!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38aef5595b18a83f%3A0xdcd534db274f873d!2zTyd6ZWxla3Ryb2FwcGFyYXQtRWxlY3Ryb3NoaWVsZCAo0KPQt9GN0LvQtdC60YLRgNC-0LDQv9C_0LDRgNCw0YIt0K3Qu9C10LrRgtGA0L7RidC40YIp!5e0!3m2!1sru!2s!4v1712033672946!5m2!1sru!2s"></iframe>
+            </div>
+        </div>
+    </div>
+    
+    <div class="contact-form">
+        <h2>КОНТАКТНАЯ ФОРМА ДЛЯ СВЯЗИ</h2>
+        <form action="{% url 'contact' %}" method="post">
+            {% csrf_token %}
+            <div class="form-error">{{ form.non_field_errors }}</div>
+            {% for f in form %}
+                <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>
+                <div class="form-error">{{ f.errors }}</div>
+            {% endfor %}
+            <button type="submit">Отправить</button>
+        </form>
+    </div>
+    
+</div>
+{% endblock %}

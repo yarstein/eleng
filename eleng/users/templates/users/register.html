@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="users-h2">Регистрация</h2>
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <div class="form-error">{{ form.non_field_errors }}</div>
+        {% for f in form %}
+            <p>
+                <label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>
+                {% if f.name == 'password1' or f.name == 'password2' %}
+                    <div style="position: relative;">
+                        {{ f }}
+                        <button type="button" onclick="togglePasswordVisibility('{{ f.id_for_label }}');" style="position: absolute; right: 10px; top: 10px; border: none; background: none;">
+                            <i id="toggleEye{{ f.id_for_label }}" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                {% else %}
+                    {{ f }}
+                {% endif %}
+                <div class="form-error">{{ f.errors }}</div>
+            </p>
+        {% endfor %}
+        <p><button type="submit">Регистрация</button></p>
+    </form>
+</div>
+
+<script>
+    function togglePasswordVisibility(fieldId) {
+        var passwordInput = document.getElementById(fieldId);
+        var toggleIcon = document.getElementById('toggleEye' + fieldId);
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+</script>
+
+{% endblock %}

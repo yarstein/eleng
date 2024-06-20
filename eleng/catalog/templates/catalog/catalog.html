@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% load mptt_tags catalog_tags %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="nav-sidebar">
+            <div class="breadcrumbs">
+                <a href="{% url 'catalog' %}">Главная \</a>
+                {% for breadcrumb in breadcrumbs %}
+                    {% if not forloop.first %}
+                        <span> \ </span>
+                    {% endif %}
+                    <a href="{{ breadcrumb.get_absolute_url }}">{{ breadcrumb.title }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row row_sidebar">
+            <div class="col-1 col-sm-3">
+                <button id="sidebar-toggle" class="sidebar-toggle">&#9776;</button>
+                <div class="sidebar">
+                    {% with request.resolver_match.url_name as current_view %}
+
+                    {% if current_view == 'tag' %}
+                        <h2>Популярные теги:</h2>
+                        {% popular_tags as tag_list %}
+                        {% for tag in tag_list %}
+                            <li class="tags-li"><a class="tags" href="{% url 'tag' tag.slug %}">{{ tag.tag }} ({{ tag.num_times }})</a></li>
+                        {% endfor %}
+                    
+                    {% else %}
+                        {% full_tree_for_model catalog.Category as categories %}
+                        <ul class="category-tree">
+                            {% recursetree categories %}
+                                <li class="category-item 
+                                    {% if node == view.category %}active-sidebar{% endif %}
+                                    {% if view.category in node.get_descendants %}parent-active{% endif %}">
+                                    <a class="{% if node == view.category %}active-sidebar-a{% endif %}" href="{{ node.get_absolute_url }}">{{ node.title }}</a>
+                                    {% if not node.is_leaf_node %}
+                                        <ul class="subcategory-tree">
+                                            {{ children }}
+                                        </ul>
+                                    {% endif %}
+                                </li>
+                            {% endrecursetree %}
+                        </ul>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+            <div class="col-11 col-sm-9 col_2_sidebar">
+                <div class="row">
+                    {% if tag_info %}
+                        <h2>Изделия с тегом: <b class="tags">{{ tag_info }}</b></h2>
+                    {% endif %}
+
+                    {% if request.GET.q %}
+                    <h2>Результаты поиска по запросу: <span style="color:#d32f2f">{{request.GET.q}}</span></h2>
+                    {% endif %}
+
+                    {% for product in products %}
+                        <div class="col-lg-3 col-md-4 col-sm-6 catalog">
+                            <div class="article-card">
+                                <img class="article-image" src="{{ product.photo.url }}" alt="{{ product.name }}">
+                                <div class="article-info">
+                                    <h2 class="article-title">{{ product.name }}</h2>
+                                    <div class="article-link-container">
+                                        <a href="{{ product.get_absolute_url }}" class="article-link">ПОДРОБНЕЕ ...</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Пагинация, page_obj - объект текущей стр. (см.оф.док) -->
+                {% if page_obj.has_other_pages %}
+                <nav class="list-pages">
+                    <ul>
+                        {% if page_obj.has_previous %}
+                        <li class="page-num">
+                            <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&lt;</a>
+                        </li>
+                        {% endif %}
+
+                        {% for p in paginator.page_range %}
+                        {% if page_obj.number == p %}
+                            <li class="page-num page-num-selected">{{ p }}</li>
+                        {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+                            <li class="page-num">
+                                <a href="?page={{ p }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{ p }}</a>
+                            </li>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                        <li class="page-num">
+                            <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">&gt;</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif%}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        var sidebarToggle = document.getElementById('sidebar-toggle');
+        var sidebar = document.querySelector('.sidebar');
+
+        // Добавляем событие клика к кнопке, чтобы переключать видимость сайдбара
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('show-sidebar'); // Переключает класс, который контролирует видимость сайдбара
+            });
+        });
+    </script>
+{% endblock %}

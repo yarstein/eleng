@@ -1,0 +1,156 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+    <link rel="stylesheet" href="{% static 'project/css/bootstrap-grid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'project/css/style.css' %}">
+    <title>{{ title }}</title>
+</head>
+<body>
+
+    <header class="nav">
+        <div class="nav-top">
+            <div class="container">
+                <div class="nav-top-bar">
+                    <button class="search-icon" aria-label="Toggle search">🔍</button>
+                    <form class="search" action="{% url 'search' %}" method="get">
+                        <input type="search" name="q" placeholder="Найти изделие ...">
+                        <button class="search-button" type="submit">Поиск</button>
+                        <button class="close-search" type="button">X</button> <!-- Кнопка закрытия формы -->
+                    </form>
+
+                    <div class="nav-top-bar_inner">
+                        <a href="{% url 'cart_detail' %}" style="position: relative;"><span style="position: absolute; left: 30%; top: 30%;">{% if cart|length %}{{ cart|length }}{% endif %}</span><img src="{% static 'project/src/basket.svg' %}"></a>
+                        <!-- user - берется из контекстного процессора settings.py/TEMPLATES 'django.contrib.auth.context_processors.auth', -->
+                        {% if user.is_authenticated %}
+                            <li class="prelogin"><a href="{% url 'users:profile' %}"><img src="{{user.avatar.url}}" width="40px" height="40px">{{ user.username }}</a> <a class="logout" href="{% url 'users:logout' %}"> Выйти</a></li>
+                        {% else %}
+                            <div><a class="login" href="{% url 'users:register' %}">Регистрация</a><a class="login" href="{% url 'users:login' %}">Войти</a></div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div class="container">
+                <div class="row center">
+                    <div class="col-xl-4 col-lg-3">
+                        <ul class="logo">
+                            <a href="{% url 'home' %}"><img src="{% static 'project/src/Logo.png' %}" alt=""></a>
+                        </ul>
+                    </div>
+                    <div class="col-xl-8 col-lg-9">
+                        <div class="menu-icon" id="menu-icon" style="font-weight: bold;">&#9776;</div>
+                        <ul class="nav_link" id="nav_link">
+                            <li><a href="{% url 'catalog' %}">Каталог</a></li>
+                            <li><a href="{% url 'product' %}">Наши услуги</a></li>
+                            <li><a href="{% url 'aboutcompany' %}">О компании</a></li>
+                            <li><a href="{% url 'news' %}">Новости</a></li>
+                            <li><a href="{% url 'vacancy' %}">Карьера</a></li>
+                            <li><a href="{% url 'contact' %}">Контакты</a></li>
+                            <li class="close-menu" id="close-menu">&#10006;</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+    </header>
+
+        <!-- {% block product %}
+    
+        {% endblock %} -->
+
+    <div class="wrapper">
+        {% block content %}
+    
+        {% endblock %}
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-logo">
+                <a href="{% url 'home' %}"><img src="{% static 'project/src/Logo.png' %}" alt=""></a>
+            </div>
+            <div class="row">
+                <div class="col-6 col-4-sm">
+                    <div class="footer-inner-1">
+                        <p></p>
+                    </div>
+                    <div class="footer-inner-1">
+                        <img src="{% static 'project/src/address.svg' %}" width="25px" height="25px">
+                        <p> Узбекистан, г.Ташкент, ул.Фаргона йули, 94</p>
+                    </div>
+                    <div class="footer-inner-1">
+                        <img src="{% static 'project/src/time.svg' %}" width="25px" height="25px">
+                        <p> <b>Будни:</b> 09:00-18:00</p>
+                    </div>
+                    <a href="tel:+998712914411">
+                        <div class="footer-inner-1">
+                            <img src="{% static 'project/src/telephone.svg' %}" width="25px" height="25px">
+                            <p> <b>Тел:</b> <span class="tel">+998(71) 291-44-11</span></p>
+                        </div>
+                    </a>
+                    <a href="mailto:info@eleng.uz">
+                        <div class="footer-inner-1">
+                            <img src="{% static 'project/src/mail.svg' %}" width="25px" height="25px">
+                            <p><span class="mail">info@eleng.uz</span></p>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-6 col-4-sm">
+                    <div class="footer-inner-2">
+                        <ul>
+                            <li><b>КОМПАНИЯ</b></li>
+                            <li><a href="{% url 'product' %}">Наши услуги</a></li>
+                            <li><a href="{% url 'aboutcompany' %}">О компании</a></li>
+                            <li><a href="{% url 'news' %}">Новости</a></li>
+                            <li><a href="{% url 'vacancy' %}">Карьера</a></li>
+                            <li><a href="{% url 'contact' %}">Контакты</a></li>
+                            <li><a href="{% url 'catalog' %}">Каталог продукции</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="under-footer">
+        <p>Copyright © 2013-2024 Все права защищены и принадлежат ElectroEngineering Inc</p>
+    </div>
+    
+
+    <script src="{% static 'project/js/main.js' %}"></script>
+    <script>
+        document.getElementById('menu-icon').addEventListener('click', function() {
+        document.getElementById('nav_link').style.display = 'flex';
+        });
+
+        document.getElementById('close-menu').addEventListener('click', function() {
+            document.getElementById('nav_link').style.display = 'none';
+        });
+
+        // Скрипт для формы поиска
+        document.addEventListener('DOMContentLoaded', function () {
+        var searchIcon = document.querySelector('.search-icon');
+        var searchForm = document.querySelector('.search');
+        var closeSearch = document.querySelector('.close-search');
+
+        searchIcon.addEventListener('click', function () {
+            searchForm.style.display = 'flex'; // Показать форму
+        });
+
+        closeSearch.addEventListener('click', function () {
+            searchForm.style.display = 'none'; // Скрыть форму
+        });
+        });
+    </script>
+</body>
+</html>
+

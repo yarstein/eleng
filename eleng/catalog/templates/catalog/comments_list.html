@@ -1,0 +1,110 @@
+{% load mptt_tags static %}
+
+
+    
+    {% recursetree product.comments.all %}
+    {% if node.is_root_node %}
+            <div class="comment-block"> <!-- Начало блока для родительского комментария -->
+    {% endif %}
+
+    <ul class="comment-ul">
+        <li class="comment-list">
+            <img src="{{ node.author.avatar.url }}" style="width: 100px; height: 100px; object-fit: cover;"/>
+            <div class="comment-list-1">
+                <p>{{ node.author }}</p>
+                <time>{{ node.time_create }}</time>
+            </div>
+            <div class="comment-list-2">
+                <div id="{{ node.id }}">{{ node.content }}</div>
+                {% if request.user.is_authenticated %}
+                    <button class="reply" onclick="myFunction({{ node.id }})">Ответить</button>
+
+                    {% if node.author == request.user %}
+                        <form action="{% url 'comment_delete' node.id %}" method="post" style="display: inline; background: none; border: none; padding: 0; margin: 0;">
+                            {% csrf_token %}
+                            <input type="hidden" name="arc_slug" value="{{ product.slug }}">
+                            <button type="submit" class="delete-comment" style="background: none; border: none; padding: 0; margin: 0; color: #f44336; font: inherit; cursor: pointer; text-decoration: underline;" onclick="return confirm('Вы уверены, что хотите удалить этот комментарий?');">Удалить</button>
+                        </form>
+                    {% endif %}
+
+                {% else %}
+                    <div class="reply-hiden"></div>
+                {% endif %}
+            </div>
+        </li>
+        {% if not node.is_leaf_node %}
+            {{ children }}
+        {% endif %}
+    </ul>
+
+    {% if node.is_root_node %}
+            </div> <!-- Конец блока для родительского комментария -->
+    {% endif %}
+    {% endrecursetree %}
+
+{% if request.user.is_authenticated %}
+    <form id="myForm" class="comment-form"  method="post" action="{% url 'comment_create_view' arc_slug=product.slug %}">
+        <div class="comment-form-1">
+            <img src="{{ request.user.avatar.url }}" style="width: 100px; height: 100px; object-fit: cover;"/>
+            {{ form.content }}
+            {% csrf_token %}
+        </div>
+        <div><button type="submit">Отправить</button></div>
+    </form>
+{% endif %}
+
+
+ 
+
+
+
+<script>
+    // Функция для получения значения CSRF токена из cookies
+    function getCSRFToken() {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.startsWith('csrftoken=')) {
+                return cookie.substring('csrftoken='.length, cookie.length);
+            }
+        }
+        return '';
+    }
+
+    function myFunction(id) {
+        var replyButton = document.querySelector('button[onclick="myFunction(' + id + ')"]');
+        if (replyButton) {
+            replyButton.style.display = 'none';
+        }
+
+        var existingForm = document.getElementById('reply-form-' + id);
+        if (!existingForm) {
+            var csrfToken = getCSRFToken();
+            var formHTML = '<form id="reply-form-' + id + '" method="post" action="{% url "comment_create_view" arc_slug=product.slug %}">' +
+                '<input type="hidden" name="csrfmiddlewaretoken" value="' + csrfToken + '">' +
+                '<input type="hidden" name="parent" value="' + id + '">' +
+                '<img src="{{ request.user.avatar.url }}" style="width: 50px; height: 50px; object-fit: cover;"/>'+
+                '<textarea name="content" cols="30" rows="5" placeholder="Комментарий" class="form-control" required=""></textarea>' +
+                '<button type="submit">Отправить</button>' +
+                '<button type="button" class="cancel-button" onclick="cancelReply(' + id + ')">Отмена</button>' +
+                '</form>';
+
+            var commentElement = document.getElementById(id);
+            if (commentElement) {
+                commentElement.insertAdjacentHTML('afterend', formHTML);
+            }
+        }
+    }
+
+    function cancelReply(id) {
+        var form = document.getElementById('reply-form-' + id);
+        if (form) {
+            form.remove();
+        }
+
+        var replyButton = document.querySelector('button[onclick="myFunction(' + id + ')"]');
+        if (replyButton) {
+            replyButton.style.display = 'block';
+        }
+    }
+</script>
